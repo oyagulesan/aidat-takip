@@ -8,7 +8,7 @@ Aidat / salma / dergi / kitap ödemelerini ve bunların teslimatlarını takip e
 
 ## Kurulum
 
-Gereksinimler: Node.js 20+ ve Docker.
+Gereksinimler: Node.js 22.9+ ve Docker.
 
 ```bash
 npm run setup          # tüm bağımlılıkları kurar
@@ -27,6 +27,26 @@ Hiç admin yoksa `.env` içindeki `ADMIN_USERNAME` / `ADMIN_PASSWORD` ile bir ad
 npm run build   # client/dist oluşturur
 npm start       # API + derlenmiş arayüz tek porttan (4000) sunulur
 ```
+
+## Render'da yayınlama (ücretsiz)
+
+Render'ın ücretsiz PostgreSQL'i 30 gün sonra siliniyor, bu yüzden veritabanı için
+[Neon](https://neon.tech) (veya Supabase) ücretsiz PostgreSQL'i kullanılır; uygulama Render'ın
+ücretsiz web servisinde çalışır. API ve arayüz tek servisten sunulur.
+
+1. Neon'da bir proje açıp bağlantı adresini kopyalayın. Adresteki `sslmode=require` kısmını
+   `sslmode=verify-full` yapın (davranış aynı, `pg` uyarısı kalkar). `channel_binding=require`
+   kalabilir; uygulama bunu okuyup channel binding'i açar.
+2. Render'da **New → Blueprint** ile bu repoyu seçin; ayarlar [`render.yaml`](render.yaml)'dan okunur.
+   (Elle **New → Web Service** açarsanız da aynı build/start komutlarını ve değişkenleri girin.)
+3. Render sizden şu değerleri ister:
+   - `DATABASE_URL` — Neon bağlantı adresi
+   - `ADMIN_PASSWORD` — ilk admin hesabının şifresi (güçlü bir şifre seçin; repo herkese açık)
+
+   `JWT_SECRET` otomatik rastgele üretilir, `ADMIN_USERNAME` varsayılan olarak `admin`'dir.
+4. İlk açılışta tablolar ve admin hesabı otomatik oluşturulur.
+
+Ücretsiz servis 15 dakika istek almazsa uykuya geçer; sonraki ilk açılış ~1 dakika sürer.
 
 ## Ekranlar
 

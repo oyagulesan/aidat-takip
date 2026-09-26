@@ -6,8 +6,12 @@ import { readFile } from 'node:fs/promises';
 pg.types.setTypeParser(1082, (v) => v);
 pg.types.setTypeParser(1700, (v) => parseFloat(v));
 
+const connectionString = process.env.DATABASE_URL || 'postgres://aidat:aidat@localhost:5432/aidat';
+
 export const pool = new pg.Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://aidat:aidat@localhost:5432/aidat',
+  connectionString,
+  // pg ignores the libpq `channel_binding` URL parameter, so honour it explicitly (e.g. Neon URLs).
+  enableChannelBinding: new URL(connectionString).searchParams.get('channel_binding') === 'require',
 });
 
 export const query = (text, params) => pool.query(text, params);

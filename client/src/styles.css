@@ -200,3 +200,5 @@ textarea.input { resize: vertical; }
 .section-title { margin: 8px 0 12px; }
 .form.narrow { max-width: 400px; }
 .user .btn.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary-soft); }
+
+.head-actions { display: flex; gap: 8px; flex-wrap: wrap; }

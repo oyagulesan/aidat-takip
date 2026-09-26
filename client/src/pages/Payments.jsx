@@ -12,6 +12,7 @@ export default function Payments({ isAdmin }) {
   const [rows, setRows] = useState(null);
   const [error, setError] = useState('');
   const [status, setStatus] = useState(null); // own missing aidat months (users only)
+  const [exporting, setExporting] = useState(false);
   const navigate = useNavigate();
   const { user } = useAuth();
 
@@ -22,6 +23,17 @@ export default function Payments({ isAdmin }) {
   }, []);
 
   const columns = useMemo(() => paymentColumns({ showMember: isAdmin }), [isAdmin]);
+
+  const exportExcel = async () => {
+    setExporting(true);
+    try {
+      await api.download('/reports/excel');
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setExporting(false);
+    }
+  };
 
   const remove = async (p) => {
     if (!confirm(`${p.member_name} – ${formatMonth(p.period)} – ${formatMoney(p.amount)} ödemesi silinsin mi?`)) return;
@@ -38,7 +50,12 @@ export default function Payments({ isAdmin }) {
       <div className="page-head">
         <h2>{isAdmin ? 'Ödemeler' : 'Ödemelerim'}</h2>
         {isAdmin && (
-          <Link className="btn btn-primary" to="/odeme/yeni">+ Ödeme Girişi</Link>
+          <div className="head-actions">
+            <button className="btn" onClick={exportExcel} disabled={exporting}>
+              {exporting ? 'Hazırlanıyor…' : "Excel'e aktar"}
+            </button>
+            <Link className="btn btn-primary" to="/odeme/yeni">+ Ödeme Girişi</Link>
+          </div>
         )}
       </div>
       {error && <div className="alert error">{error}</div>}

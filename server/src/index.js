@@ -4,6 +4,7 @@ import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { query, withTransaction, migrate } from './db.js';
 import { signToken, requireAuth, requireAdmin } from './auth.js';
+import { buildReport, reportFileName } from './report.js';
 
 const PAYMENT_TYPES = ['aidat', 'salma', 'dergi', 'kitap', 'diger'];
 const METHODS = ['nakit', 'iban'];
@@ -326,6 +327,20 @@ app.delete('/api/deliveries/:id', requireAdmin, h(async (req, res) => {
   const { rowCount } = await query('DELETE FROM deliveries WHERE id = $1', [Number(req.params.id)]);
   if (!rowCount) throw new HttpError(404, 'Teslimat bulunamadı');
   res.status(204).end();
+}));
+
+/* -------------------------------------------------------------- report */
+
+app.get('/api/reports/excel', requireAdmin, h(async (req, res) => {
+  const [members, payments, deliveries] = await Promise.all([
+    query('SELECT id, name, start_month, end_month FROM members'),
+    query(PAYMENT_SELECT),
+    query('SELECT id, delivery_date, description FROM deliveries'),
+  ]);
+  const buffer = await buildReport({ members: members.rows, payments: payments.rows, deliveries: deliveries.rows });
+  res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  res.setHeader('Content-Disposition', `attachment; filename="${reportFileName()}"`);
+  res.send(Buffer.from(buffer));
 }));
 
 /* ------------------------------------------------------ static + errors */

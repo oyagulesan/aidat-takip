@@ -9,6 +9,8 @@ services:
     envVars:
       - key: NODE_VERSION
         value: "22"
+      - key: TZ # current month for missing aidat, times in the Excel report
+        value: Europe/Istanbul
       - key: DATABASE_URL
         sync: false
       - key: JWT_SECRET

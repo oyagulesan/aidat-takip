@@ -52,7 +52,7 @@ Render'ın ücretsiz PostgreSQL'i 30 gün sonra siliniyor, bu yüzden veritaban�
 
 | Ekran | Kim | Ne yapar |
 |---|---|---|
-| Ödemeler | Admin | Tüm ödemeler; varsayılan sıralama giriş tarihine göre yeniden eskiye. Teslim edilmemiş ödemeler düzenlenebilir/silinebilir. |
+| Ödemeler | Admin | Tüm ödemeler; varsayılan sıralama giriş tarihine göre yeniden eskiye. Teslim edilmemiş ödemeler düzenlenebilir/silinebilir. **Excel'e aktar** ile rapor indirilir (aşağıya bakın). |
 | Ödemelerim | User | Sadece kendi ödemeleri (salt okunur) ve eksik aidat ayları. |
 | Kullanıcı Ödemeleri | Admin | Dropdown'dan seçilen kullanıcının ödemeleri ve eksik aidat ayları. |
 | Şifre değiştir | Herkes | Mevcut şifreyi doğrulayıp yeni şifre belirler. |
@@ -63,6 +63,19 @@ Render'ın ücretsiz PostgreSQL'i 30 gün sonra siliniyor, bu yüzden veritaban�
 
 Tüm tablolarda her kolon başlığındaki **▾** ile Excel benzeri filtre açılır: artan/azalan sıralama,
 arama ve çoklu seçimli değer listesi. Kolon adına tıklamak da sıralamayı değiştirir.
+
+## Excel raporu
+
+Ödemeler sayfasındaki **Excel'e aktar** butonu (sadece admin) tüm verilerle `aidat-rapor-YYYY-MM-DD.xlsx` indirir:
+
+| Sekme | İçerik |
+|---|---|
+| Ödemeler | Ödemenin ait olduğu aya göre ay ay gruplanmış tüm ödemeler; her ayın altında ara toplam, en altta genel toplam. |
+| Teslimatlar | Teslimat tarihine göre ay ay gruplanmış teslimatlar, tip bazında tutarlar; ay ara toplamları, genel toplam ve henüz teslim edilmemiş tutar. |
+| Aidat Borçları | Kullanıcı × ay tablosu (başlangıcı en eski kullanıcıdan bu aya kadar): ödenen aidat tutarı (yeşil), **Borç** (kırmızı), üyelik aralığı dışı (gri). Her kullanıcı için borçlu ay sayısı, her ay için borçlu kişi sayısı. |
+| Aylık Özet | Her ay için tip bazında toplamlar, teslim edilen / edilmemiş tutar. |
+
+Ay grupları Excel'in gruplama (outline) özelliğiyle kapatılıp açılabilir.
 
 ## Kurallar
 

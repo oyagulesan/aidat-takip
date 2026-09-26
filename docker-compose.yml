@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: aidat-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: aidat
+      POSTGRES_PASSWORD: aidat
+      POSTGRES_DB: aidat
+    ports:
+      - "5432:5432"
+    volumes:
+      - aidat-data:/var/lib/postgresql/data
+
+volumes:
+  aidat-data:

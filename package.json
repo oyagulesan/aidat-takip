@@ -1,0 +1,16 @@
+{
+  "name": "aidat-takip",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "npm install && npm --prefix server install && npm --prefix client install",
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "dev": "concurrently -n server,client -c blue,green \"npm --prefix server run dev\" \"npm --prefix client run dev\"",
+    "build": "npm --prefix client run build",
+    "start": "npm --prefix server start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

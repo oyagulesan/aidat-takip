@@ -1,4 +1,5 @@
-import { Navigate, NavLink, Route, Routes } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './auth.jsx';
 import Login from './pages/Login.jsx';
 import Payments from './pages/Payments.jsx';
@@ -11,6 +12,17 @@ import ChangePassword from './pages/ChangePassword.jsx';
 
 export default function App() {
   const { user, loading, logout } = useAuth();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // Close the mobile menu after navigating or on Escape.
+  useEffect(() => setMenuOpen(false), [pathname]);
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => e.key === 'Escape' && setMenuOpen(false);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
 
   if (loading) return <div className="center muted">Yükleniyor…</div>;
   if (!user) {
@@ -25,25 +37,39 @@ export default function App() {
 
   return (
     <div className="app">
-      <header className="topbar">
+      <header className={`topbar ${menuOpen ? 'menu-open' : ''}`}>
         <div className="brand">Aidat Takip</div>
-        <nav>
-          <NavLink to="/" end>{isAdmin ? 'Ödemeler' : 'Ödemelerim'}</NavLink>
-          {isAdmin && (
-            <>
-              <NavLink to="/odeme/yeni">Ödeme Girişi</NavLink>
-              <NavLink to="/uye">Kullanıcı Ödemeleri</NavLink>
-              <NavLink to="/teslimatlar">Teslimatlar</NavLink>
-              <NavLink to="/uyeler">Kullanıcılar</NavLink>
-            </>
-          )}
-        </nav>
-        <div className="user">
-          <span>{user.name}</span>
-          <NavLink to="/sifre" className="btn btn-small">Şifre değiştir</NavLink>
-          <button className="btn btn-small" onClick={logout}>Çıkış</button>
+        <button
+          className="menu-toggle"
+          aria-label={menuOpen ? 'Menüyü kapat' : 'Menüyü aç'}
+          aria-expanded={menuOpen}
+          aria-controls="main-menu"
+          onClick={() => setMenuOpen((o) => !o)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+        <div className="menu" id="main-menu">
+          <nav>
+            <NavLink to="/" end>{isAdmin ? 'Ödemeler' : 'Ödemelerim'}</NavLink>
+            {isAdmin && (
+              <>
+                <NavLink to="/odeme/yeni">Ödeme Girişi</NavLink>
+                <NavLink to="/uye">Kullanıcı Ödemeleri</NavLink>
+                <NavLink to="/teslimatlar">Teslimatlar</NavLink>
+                <NavLink to="/uyeler">Kullanıcılar</NavLink>
+              </>
+            )}
+          </nav>
+          <div className="user">
+            <span>{user.name}</span>
+            <NavLink to="/sifre" className="btn btn-small">Şifre değiştir</NavLink>
+            <button className="btn btn-small" onClick={logout}>Çıkış</button>
+          </div>
         </div>
       </header>
+      {menuOpen && <div className="menu-backdrop" onClick={() => setMenuOpen(false)} />}
       <main className="content">
         <Routes>
           <Route path="/" element={<Payments isAdmin={isAdmin} />} />

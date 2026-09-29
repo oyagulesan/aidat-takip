@@ -33,3 +33,10 @@ CREATE TABLE IF NOT EXISTS payments (
 
 CREATE INDEX IF NOT EXISTS payments_member_idx   ON payments(member_id);
 CREATE INDEX IF NOT EXISTS payments_delivery_idx ON payments(delivery_id);
+
+-- Key/value application settings. Missing keys fall back to defaults in code.
+CREATE TABLE IF NOT EXISTS config (
+  key        TEXT PRIMARY KEY,
+  value      TEXT NOT NULL,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);

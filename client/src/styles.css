@@ -259,3 +259,36 @@ textarea.input { resize: vertical; }
 }
 .toast-error { background: var(--danger); }
 @keyframes toast-in { from { opacity: 0; transform: translate(-50%, 8px); } }
+
+/* ---------- pending delivery indicator ---------- */
+.pending-delivery { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; max-width: 560px; border-left-width: 4px; }
+.pd-icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
+.pd-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.pd-total { font-size: 22px; }
+.pd-label { font-weight: 600; }
+.level-ok { border-left-color: #1f6f5c; }
+.level-ok .pd-icon { background: #e3f1ed; color: #1f6f5c; }
+.level-ok .pd-label { color: #1f6f5c; }
+.level-warn { border-left-color: #e0a100; }
+.level-warn .pd-icon { background: #fff6e0; color: #b98200; }
+.level-warn .pd-label { color: #8a5a00; }
+.level-danger { border-left-color: var(--danger); }
+.level-danger .pd-icon { background: #fdecea; color: var(--danger); }
+.level-danger .pd-label { color: var(--danger); }
+
+/* ---------- settings ---------- */
+.form.narrow-wide { max-width: 560px; }
+.threshold-preview { display: flex; flex-direction: column; gap: 6px; padding: 12px; background: var(--bg); border-radius: 6px; font-size: 13px; }
+.threshold-preview span { display: flex; align-items: center; gap: 8px; }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.dot-ok { background: #1f6f5c; }
+.dot-warn { background: #e0a100; }
+.dot-danger { background: var(--danger); }
+
+/* ---------- monthly breakdown (delivery detail) ---------- */
+.monthly-breakdown { display: flex; flex-direction: column; gap: 12px; }
+.monthly-breakdown .breakdown-total strong { font-size: 16px; }
+.monthly-total { border-top: 2px solid var(--border); padding-top: 12px; }
+.monthly-total .breakdown-total strong { font-size: 20px; }
+.monthly-breakdown .breakdown-total { min-width: 140px; }
+.monthly-breakdown .breakdown-type { min-width: 88px; }

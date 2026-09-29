@@ -9,6 +9,7 @@ import Deliveries from './pages/Deliveries.jsx';
 import NewDelivery from './pages/NewDelivery.jsx';
 import MemberPayments from './pages/MemberPayments.jsx';
 import ChangePassword from './pages/ChangePassword.jsx';
+import Settings from './pages/Settings.jsx';
 
 export default function App() {
   const { user, loading, logout } = useAuth();
@@ -59,6 +60,7 @@ export default function App() {
                 <NavLink to="/uye">Kullanıcı Ödemeleri</NavLink>
                 <NavLink to="/teslimatlar">Teslimatlar</NavLink>
                 <NavLink to="/uyeler">Kullanıcılar</NavLink>
+                <NavLink to="/ayarlar">Ayarlar</NavLink>
               </>
             )}
           </nav>
@@ -83,6 +85,7 @@ export default function App() {
               <Route path="/uyeler" element={<Members />} />
               <Route path="/uye" element={<MemberPayments />} />
               <Route path="/uye/:id" element={<MemberPayments />} />
+              <Route path="/ayarlar" element={<Settings />} />
             </>
           )}
           <Route path="*" element={<Navigate to="/" replace />} />

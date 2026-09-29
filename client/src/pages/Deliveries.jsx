@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { api } from '../api.js';
 import DataTable from '../components/DataTable.jsx';
 import Breakdown from '../components/Breakdown.jsx';
-import { PAYMENT_TYPES, breakdown, formatDate, formatMoney } from '../format.js';
+import MonthlyBreakdown from '../components/MonthlyBreakdown.jsx';
+import { PAYMENT_TYPES, formatDate, formatMoney } from '../format.js';
 import { paymentColumns } from '../paymentColumns.jsx';
 
 const columns = [
@@ -98,7 +99,7 @@ export default function Deliveries() {
             columns={detailColumns}
             rows={detail.payments}
             defaultSort={{ key: 'created_at', dir: 'desc' }}
-            footer={(visible) => <Breakdown title="Toplam" {...breakdown(visible)} />}
+            footer={(visible) => <MonthlyBreakdown payments={visible} />}
           />
         </div>
       )}

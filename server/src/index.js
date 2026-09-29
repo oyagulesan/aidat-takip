@@ -329,6 +329,65 @@ app.delete('/api/deliveries/:id', requireAdmin, h(async (req, res) => {
   res.status(204).end();
 }));
 
+/* -------------------------------------------------------------- config */
+
+// Numeric settings stored in the `config` table; these defaults apply when a key has no row.
+const CONFIG_DEFAULTS = {
+  'delivery.warn_threshold': 2000,
+  'delivery.danger_threshold': 5000,
+};
+
+async function readConfig() {
+  const { rows } = await query('SELECT key, value FROM config WHERE key = ANY($1)', [Object.keys(CONFIG_DEFAULTS)]);
+  const stored = Object.fromEntries(rows.map((r) => [r.key, Number(r.value)]));
+  const values = {};
+  const isDefault = {};
+  for (const [key, def] of Object.entries(CONFIG_DEFAULTS)) {
+    const ok = Number.isFinite(stored[key]);
+    values[key] = ok ? stored[key] : def;
+    isDefault[key] = !ok;
+  }
+  return { values, defaults: CONFIG_DEFAULTS, isDefault };
+}
+
+app.get('/api/config', requireAdmin, h(async (req, res) => res.json(await readConfig())));
+
+// Body: { values: { key: number | null } } — null removes the row so the default applies again.
+app.put('/api/config', requireAdmin, h(async (req, res) => {
+  const input = req.body?.values || {};
+  const current = (await readConfig()).values;
+  const next = { ...current };
+  const updates = [];
+  for (const [key, raw] of Object.entries(input)) {
+    if (!(key in CONFIG_DEFAULTS)) throw new HttpError(400, `Bilinmeyen ayar: ${key}`);
+    if (raw === null || raw === '') {
+      next[key] = CONFIG_DEFAULTS[key];
+      updates.push([key, null]);
+      continue;
+    }
+    const n = Number(String(raw).replace(',', '.'));
+    if (!Number.isFinite(n) || n <= 0) throw new HttpError(400, 'Eşik değerleri 0\'dan büyük bir sayı olmalıdır');
+    next[key] = n;
+    updates.push([key, n]);
+  }
+  if (next['delivery.warn_threshold'] >= next['delivery.danger_threshold']) {
+    throw new HttpError(400, 'Sarı eşik, kırmızı eşikten küçük olmalıdır');
+  }
+  await withTransaction(async (client) => {
+    for (const [key, value] of updates) {
+      if (value === null) await client.query('DELETE FROM config WHERE key = $1', [key]);
+      else {
+        await client.query(
+          `INSERT INTO config (key, value) VALUES ($1, $2)
+           ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = now()`,
+          [key, String(value)],
+        );
+      }
+    }
+  });
+  res.json(await readConfig());
+}));
+
 /* -------------------------------------------------------------- report */
 
 app.get('/api/reports/excel', requireAdmin, h(async (req, res) => {

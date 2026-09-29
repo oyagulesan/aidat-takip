@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useAuth } from './auth.jsx';
 import Login from './pages/Login.jsx';
+import Home from './pages/Home.jsx';
 import Payments from './pages/Payments.jsx';
 import PaymentForm from './pages/PaymentForm.jsx';
 import Members from './pages/Members.jsx';
@@ -53,9 +54,10 @@ export default function App() {
         </button>
         <div className="menu" id="main-menu">
           <nav>
-            <NavLink to="/" end>{isAdmin ? 'Ödemeler' : 'Ödemelerim'}</NavLink>
+            <NavLink to="/" end>{isAdmin ? 'Ana sayfa' : 'Ödemelerim'}</NavLink>
             {isAdmin && (
               <>
+                <NavLink to="/odemeler">Ödemeler</NavLink>
                 <NavLink to="/odeme/yeni">Ödeme Girişi</NavLink>
                 <NavLink to="/uye">Kullanıcı Ödemeleri</NavLink>
                 <NavLink to="/teslimatlar">Teslimatlar</NavLink>
@@ -74,10 +76,11 @@ export default function App() {
       {menuOpen && <div className="menu-backdrop" onClick={() => setMenuOpen(false)} />}
       <main className="content">
         <Routes>
-          <Route path="/" element={<Payments isAdmin={isAdmin} />} />
+          <Route path="/" element={<Home />} />
           <Route path="/sifre" element={<ChangePassword />} />
           {isAdmin && (
             <>
+              <Route path="/odemeler" element={<Payments />} />
               <Route path="/odeme/yeni" element={<PaymentForm />} />
               <Route path="/odeme/:id" element={<PaymentForm />} />
               <Route path="/teslimatlar" element={<Deliveries />} />

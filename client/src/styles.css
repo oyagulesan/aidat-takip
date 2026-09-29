@@ -183,7 +183,8 @@ textarea.input { resize: vertical; }
 .menu-toggle { display: none; }
 .menu-backdrop { display: none; }
 
-@media (max-width: 900px) {
+/* Breakpoint = width where the admin's 7 links + user actions stop fitting on one row. */
+@media (max-width: 1180px) {
   .topbar { justify-content: space-between; padding: 0 16px; }
   .menu-toggle {
     display: flex; flex-direction: column; justify-content: center; gap: 5px;

@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { api } from '../api.js';
 import { breakdown, formatMoney } from '../format.js';
 
 const LEVELS = {
@@ -34,8 +36,19 @@ const LEVELS = {
 /** Below `warn` is fine, `warn`..`danger` (inclusive) is a heads-up, above `danger` a delivery is due. */
 export const pendingLevel = (total, { warn, danger }) => (total > danger ? 'danger' : total >= warn ? 'warn' : 'ok');
 
-/** Admin summary of payments not yet delivered, with a traffic-light hint. */
-export default function PendingDelivery({ payments, thresholds }) {
+/** Admin summary of payments not yet delivered, with a traffic-light hint. Thresholds come from /config. */
+export default function PendingDelivery({ payments }) {
+  const [thresholds, setThresholds] = useState(null);
+
+  useEffect(() => {
+    api
+      .get('/config')
+      .then((c) => setThresholds({ warn: c.values['delivery.warn_threshold'], danger: c.values['delivery.danger_threshold'] }))
+      .catch(() => {}); // the card is a hint; hide it rather than break the page
+  }, []);
+
+  if (!payments || !thresholds) return null;
+
   const { total, count } = breakdown(payments.filter((p) => !p.delivery_id));
   const level = pendingLevel(total, thresholds);
   const { label, icon } = LEVELS[level];

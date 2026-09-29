@@ -25,7 +25,7 @@ export default function PaymentForm() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    api.get('/members').then((all) => setMembers(all.filter((m) => m.role === 'user'))).catch((e) => setError(e.message));
+    api.get('/members').then(setMembers).catch((e) => setError(e.message));
   }, []);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export default function PaymentForm() {
     try {
       if (isEdit) {
         await api.put(`/payments/${id}`, form);
-        navigate('/');
+        navigate('/odemeler');
       } else {
         await api.post('/payments', form);
         setSaved(`${member?.name} için ${formatMonth(form.period)} ödemesi kaydedildi.`);
@@ -88,6 +88,7 @@ export default function PaymentForm() {
             {members.map((m) => (
               <option key={m.id} value={m.id}>
                 {m.name}
+                {m.role === 'admin' ? ' (admin)' : ''}
                 {m.end_month ? ' (pasif)' : ''}
               </option>
             ))}
@@ -158,7 +159,7 @@ export default function PaymentForm() {
         {saved && <div className="alert success">{saved}</div>}
 
         <div className="form-actions">
-          <button type="button" className="btn" onClick={() => navigate('/')}>
+          <button type="button" className="btn" onClick={() => navigate('/odemeler')}>
             {isEdit ? 'İptal' : 'Ödemelere dön'}
           </button>
           <button className="btn btn-primary" disabled={busy}>{busy ? 'Kaydediliyor…' : 'Kaydet'}</button>

@@ -6,6 +6,7 @@ import Breakdown from '../components/Breakdown.jsx';
 import { breakdown, formatMoney, formatMonth } from '../format.js';
 import { paymentColumns } from '../paymentColumns.jsx';
 import MissingMonths from '../components/MissingMonths.jsx';
+import PaymentInfo from '../components/PaymentInfo.jsx';
 import { useAuth } from '../auth.jsx';
 
 export default function Payments({ isAdmin }) {
@@ -59,6 +60,7 @@ export default function Payments({ isAdmin }) {
         )}
       </div>
       {error && <div className="alert error">{error}</div>}
+      <PaymentInfo />
       {status && <MissingMonths months={status.missing_months} member={status.member} />}
       {!rows ? (
         <div className="muted">Yükleniyor…</div>
